@@ -27,20 +27,20 @@ Request body: <br/>
 "comment": <Comment>, <br/>
 "requireObjectionableWords": <true/false> <br/>
 }<br/>
-Result:
-{
-    "comment": <Comment>,
-    "objectionable": true/false,
-    "objectionableWords": <null/List of objectionable words in the comment>
-}
+Result:<br/>
+{<br/>
+    "comment": <Comment>,<br/>
+    "objectionable": true/false,<br/>
+    "objectionableWords": <null/List of objectionable words in the comment><br/>
+}<br/>
 
-GET API: objectionableWords/
-Description: Returns all the objectionable words that the comments are checked against
-Result:
-<Objectionable words list>
+GET API: objectionableWords/<br/>
+Description: Returns all the objectionable words that the comments are checked against<br/>
+Result:<br/>
+<Objectionable words list><br/>
 
-POST API: objectionableWords/
-Body: List of words that are to be added in the objectionable list  (eg: ["word4","word3","word5"])
+POST API: objectionableWords/<br/>
+Body: List of words that are to be added in the objectionable list  (eg: ["word4","word3","word5"])<br/>
 
 ## Alternate Approach:
 Can use cache to load large number of objectionable words
