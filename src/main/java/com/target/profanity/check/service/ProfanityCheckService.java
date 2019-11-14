@@ -24,6 +24,7 @@ public class ProfanityCheckService {
     private static final Logger logger = LoggerFactory.getLogger(ProfanityCheckService.class);
     public static Set<String> objectionableWords = new HashSet();
     List<String> stopWords = Arrays.asList("this", "the", "that", "him", "her", "there");
+
     @Value("${objectionableWords.file.path}")
     private String filePath;
 
@@ -45,6 +46,7 @@ public class ProfanityCheckService {
         CommentResponse commentResponseObj = new CommentResponse();
         commentResponseObj.setComment(comment);
 
+        comment=removePunctuations(comment);
         List<String> filteredComment = filterStopWords(comment);
         logger.info("Filtered comment:" + filteredComment);
         logger.info("Validate comment");
@@ -52,13 +54,17 @@ public class ProfanityCheckService {
         return commentResponseObj;
     }
 
-    private boolean validateComment(List<String> filteredComment) {
+    public String removePunctuations(String comment) {
+        return comment.replaceAll("\\p{Punct}", " ");
+    }
+
+    public boolean validateComment(List<String> filteredComment) {
         if (filteredComment.isEmpty())
             return false;
         return filteredComment.stream().anyMatch(word -> objectionableWords.contains(word));
     }
 
-    private List<String> filterStopWords(String comment) {
+    public List<String> filterStopWords(String comment) {
         List<String> words = Stream.of(comment.split("\\s+")).filter(word -> word.length() >= 2).map(String::toLowerCase).collect(Collectors.toList());
         words.removeAll(stopWords);
         return words;
@@ -68,6 +74,7 @@ public class ProfanityCheckService {
         CommentResponse commentResponseObj = new CommentResponse();
         commentResponseObj.setComment(comment);
 
+        comment=removePunctuations(comment);
         List<String> filteredComment = filterStopWords(comment);
         logger.info("Filtered comment:" + filteredComment);
         logger.info("Validate comment");
@@ -80,14 +87,14 @@ public class ProfanityCheckService {
         return commentResponseObj;
     }
 
-    private List<String> getListOfObjectionableWords(List<String> filteredComment) {
+    public List<String> getListOfObjectionableWords(List<String> filteredComment) {
         return filteredComment.stream().filter(word -> objectionableWords.contains(word)).collect(Collectors.toList());
     }
 
     public CommentResponse processComment(CommentRequest comment) {
         if (comment.isRequireObjectionableWords())
-            return getAllObjectionableWords(comment.getCommemnt());
+            return getAllObjectionableWords(comment.getComment());
         else
-            return checkIfCommentIsObjectionable(comment.getCommemnt());
+            return checkIfCommentIsObjectionable(comment.getComment());
     }
 }
