@@ -19,22 +19,20 @@ Develop a REST API to moderate/validate the comment text to prevent customers fr
 4) Objectionable words can be added to the file with Objectionable words and in HashSet
 
 ## API details:
-GET API: profanityCheck/<Comment>
-Description: Returns if the given comment is objectionable or not
-Result:
-{
-    "comment": <Comment>,
-    "objectionable": true/false,
-    "objectionableWords": null
-}
+POST API: profanityCheck/
 
-GET API: profanityCheck/getAllObjectionableWords/<Comment>
-Description: Returns if the given comment is objectionable or not and gives the list of words that are objectionable
+Description: Returns if the given comment is objectionable or not
+             If requireObjectionableWords is true it returns the list of words that are objectionable else it returns null
+Request body:
+{
+"comment": <Comment>,
+"requireObjectionableWords": <true/false>
+}
 Result:
 {
     "comment": <Comment>,
     "objectionable": true/false,
-    "objectionableWords": <List of objectionable words in the comment>
+    "objectionableWords": <null/List of objectionable words in the comment>
 }
 
 GET API: objectionableWords/
@@ -45,8 +43,8 @@ Result:
 POST API: objectionableWords/
 Body: List of words that are to be added in the objectionable list  (eg: ["word4","word3","word5"])
 
-## Constraints:
-1) The comment passed to validate can have atmost 1669 characters. To validate longer comments spit it.
+## Alternate Approach:
+Can use cache to load large number of objectionable words
 
 
 

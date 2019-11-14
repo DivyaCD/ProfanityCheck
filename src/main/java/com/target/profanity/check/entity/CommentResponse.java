@@ -2,7 +2,7 @@ package com.target.profanity.check.entity;
 
 import java.util.List;
 
-public class Comment {
+public class CommentResponse {
 
     String comment;
     boolean objectionable;

@@ -18,8 +18,8 @@ public class ObjectionableWordsController {
 
     @GetMapping
     public ResponseEntity getAllObjectionableWords() {
-        Set<String> users = objectionableWordsService.getAllObjectionableWords();
-        return new ResponseEntity(users, HttpStatus.OK);
+        Set<String> objectionableWords = objectionableWordsService.getAllObjectionableWords();
+        return new ResponseEntity(objectionableWords, HttpStatus.OK);
     }
 
     @PostMapping

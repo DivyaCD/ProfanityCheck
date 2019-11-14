@@ -1,11 +1,14 @@
 package com.target.profanity.check.service;
 
-import com.target.profanity.check.entity.Comment;
+import com.target.profanity.check.entity.CommentRequest;
+import com.target.profanity.check.entity.CommentResponse;
 import com.target.profanity.check.exception.TargetApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,19 +22,16 @@ import java.util.stream.Stream;
 @Service
 public class ProfanityCheckService {
     private static final Logger logger = LoggerFactory.getLogger(ProfanityCheckService.class);
-
-    List<String> stopWords= Arrays.asList("this","the","that","him","her","there");
-
     public static Set<String> objectionableWords = new HashSet();
+    List<String> stopWords = Arrays.asList("this", "the", "that", "him", "her", "there");
+    @Value("${objectionableWords.file.path}")
+    private String filePath;
 
-    static {
-        loadObjectionableWordsInHashSet("/Users/d0c01cs/Documents/basics_learn/Target-profanityCheck/src/main/resources/objectionableWords.txt");
-    }
-
-    private static void loadObjectionableWordsInHashSet(String filename) {
+    @PostConstruct
+    public void init() {
         logger.info("Load objectionable words in HashSet");
 
-        try (Stream<String> stream = Files.lines(Paths.get(filename))) {
+        try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
             objectionableWords = stream
                     .map(String::toLowerCase)
                     .collect(Collectors.toSet());
@@ -41,48 +41,53 @@ public class ProfanityCheckService {
 
     }
 
-    public Comment checkIfCommentIsObjectionable(String comment) {
-        Comment commentObj=new Comment();
-        commentObj.setComment(comment);
+    public CommentResponse checkIfCommentIsObjectionable(String comment) {
+        CommentResponse commentResponseObj = new CommentResponse();
+        commentResponseObj.setComment(comment);
 
-//        String removePunctuations(comment);
-        List<String> filteredComment=filterStopWords(comment);
-        logger.info("Filtered comment:"+filteredComment);
+        List<String> filteredComment = filterStopWords(comment);
+        logger.info("Filtered comment:" + filteredComment);
         logger.info("Validate comment");
-        commentObj.setObjectionable(validateComment(filteredComment));
-        return commentObj;
+        commentResponseObj.setObjectionable(validateComment(filteredComment));
+        return commentResponseObj;
     }
 
     private boolean validateComment(List<String> filteredComment) {
-        if(filteredComment.isEmpty())
+        if (filteredComment.isEmpty())
             return false;
-        return filteredComment.stream().anyMatch(word->objectionableWords.contains(word));
+        return filteredComment.stream().anyMatch(word -> objectionableWords.contains(word));
     }
 
     private List<String> filterStopWords(String comment) {
-        List<String> words=Stream.of(comment.split("\\s+")).filter(word->word.length()>=2).map(String::toLowerCase).collect(Collectors.toList());
+        List<String> words = Stream.of(comment.split("\\s+")).filter(word -> word.length() >= 2).map(String::toLowerCase).collect(Collectors.toList());
         words.removeAll(stopWords);
         return words;
     }
 
-    public Comment getAllObjectionableWords(String comment) {
-        Comment commentObj=new Comment();
-        commentObj.setComment(comment);
+    public CommentResponse getAllObjectionableWords(String comment) {
+        CommentResponse commentResponseObj = new CommentResponse();
+        commentResponseObj.setComment(comment);
 
-//        String removePunctuations(comment);
-        List<String> filteredComment=filterStopWords(comment);
-        logger.info("Filtered comment:"+filteredComment);
+        List<String> filteredComment = filterStopWords(comment);
+        logger.info("Filtered comment:" + filteredComment);
         logger.info("Validate comment");
 
-        List<String> objectionableWordsList=getListOfObjectionableWords(filteredComment);
-        commentObj.setObjectionableWords(objectionableWordsList);
+        List<String> objectionableWordsList = getListOfObjectionableWords(filteredComment);
+        commentResponseObj.setObjectionableWords(objectionableWordsList);
 
-        boolean isObjectionable=objectionableWordsList.isEmpty()?false:true;
-        commentObj.setObjectionable(isObjectionable);
-        return commentObj;
+        boolean isObjectionable = objectionableWordsList.isEmpty() ? false : true;
+        commentResponseObj.setObjectionable(isObjectionable);
+        return commentResponseObj;
     }
 
     private List<String> getListOfObjectionableWords(List<String> filteredComment) {
-        return filteredComment.stream().filter(word->objectionableWords.contains(word)).collect(Collectors.toList());
+        return filteredComment.stream().filter(word -> objectionableWords.contains(word)).collect(Collectors.toList());
+    }
+
+    public CommentResponse processComment(CommentRequest comment) {
+        if (comment.isRequireObjectionableWords())
+            return getAllObjectionableWords(comment.getCommemnt());
+        else
+            return checkIfCommentIsObjectionable(comment.getCommemnt());
     }
 }
