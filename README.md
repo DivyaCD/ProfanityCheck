@@ -21,8 +21,7 @@ Develop a REST API to moderate/validate the comment text to prevent customers fr
 ## API details:
 POST API: profanityCheck/
 
-Description: Returns if the given comment is objectionable or not
-             If requireObjectionableWords is true it returns the list of words that are objectionable else it returns null
+Description: Returns if the given comment is objectionable or not.If requireObjectionableWords is true it returns the list of words that are objectionable else it returns null.
 Request body:
 {
 "comment": <Comment>,
