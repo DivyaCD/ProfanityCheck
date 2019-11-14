@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/objectionableWord")
+@RequestMapping("/objectionableWords")
 public class ObjectionableWordsController {
 
     @Autowired
