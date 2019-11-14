@@ -24,7 +24,7 @@ POST API: profanityCheck/
 Description: Returns if the given comment is objectionable or not.If requireObjectionableWords is true it returns the list of words that are objectionable else it returns null. <br/>
 Request body: <br/>
 { <br/>
-"comment": <Comment>, <br/>
+"comment": `<Comment>`, <br/>
 "requireObjectionableWords": <true/false> <br/>
 }<br/>
 Result:<br/>
