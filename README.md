@@ -29,15 +29,15 @@ Request body: <br/>
 }<br/>
 Result:<br/>
 {<br/>
-    "comment": <Comment>,<br/>
-    "objectionable": true/false,<br/>
+    "comment": `<Comment>`,<br/>
+    "objectionable": <true/false>,<br/>
     "objectionableWords": <null/List of objectionable words in the comment><br/>
 }<br/>
 
 GET API: objectionableWords/<br/>
 Description: Returns all the objectionable words that the comments are checked against<br/>
 Result:<br/>
-<Objectionable words list><br/>
+`<Objectionable words list>`<br/>
 
 POST API: objectionableWords/<br/>
 Body: List of words that are to be added in the objectionable list  (eg: ["word4","word3","word5"])<br/>
